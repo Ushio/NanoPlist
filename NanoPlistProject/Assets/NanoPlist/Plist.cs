@@ -292,18 +292,9 @@ namespace NanoPlist
 
             public ulong NumberOfObject;
             public ulong MaxStringEncodingBytes;
-
-            public ObjectAnalytics Merge(ObjectAnalytics rhs)
-            {
-                return new ObjectAnalytics()
-                {
-                    MaxStringEncodingBytes = Math.Max(this.MaxStringEncodingBytes, rhs.MaxStringEncodingBytes),
-                    NumberOfObject = this.NumberOfObject + rhs.NumberOfObject
-                };
-            }
         }
 
-        public static ObjectAnalytics AnalyzeObject(object root)
+        public static void AnalyzeObject(object root, ref ObjectAnalytics analytics)
         {
             if (root == null)
             {
@@ -318,35 +309,34 @@ namespace NanoPlist
                 root is byte[]
             )
             {
-                return new ObjectAnalytics() { MaxStringEncodingBytes = 0, NumberOfObject = 1 };
+                analytics.NumberOfObject++;
+                return;
             }
 
             if (root is string)
             {
-                return new ObjectAnalytics() { MaxStringEncodingBytes = (ulong)UTF16BE.GetMaxByteCount(((string)root).Length), NumberOfObject = 1 };
+                analytics.MaxStringEncodingBytes = Math.Max(analytics.MaxStringEncodingBytes, (ulong)UTF16BE.GetMaxByteCount(((string)root).Length));
+                analytics.NumberOfObject++;
+                return;
             }
             if (root is PlistList)
             {
-                ObjectAnalytics oa = ObjectAnalytics.Nil;
                 foreach (var o in root as PlistList)
                 {
-                    oa = oa.Merge(AnalyzeObject(o));
+                    AnalyzeObject(o, ref analytics);
                 }
-                oa.NumberOfObject += 1; /* me */
-                return oa;
+                analytics.NumberOfObject++; /* me */
+                return;
             }
             if (root is PlistDictionary)
             {
-                ObjectAnalytics oa = ObjectAnalytics.Nil;
                 foreach (var o in root as PlistDictionary)
                 {
-                    oa = oa.Merge(
-                        AnalyzeObject(o.Key).Merge(AnalyzeObject(o.Value))
-                    );
+                    AnalyzeObject(o.Key, ref analytics);
+                    AnalyzeObject(o.Value, ref analytics);
                 }
-
-                oa.NumberOfObject += 1; /* me */
-                return oa;
+                analytics.NumberOfObject++; /* me */
+                return;
             }
             throw new PlistException("undefined data type");
         }
@@ -666,7 +656,10 @@ namespace NanoPlist
             stream.WriteByte((byte)'0');
             stream.WriteByte((byte)'0');
 
-            var analytics = AnalyzeObject(root);
+            // var analytics = AnalyzeObject(root);
+            ObjectAnalytics analytics = ObjectAnalytics.Nil;
+            AnalyzeObject(root, ref analytics);
+
             byte objectRefSize = MinBytesUnsignedInteger(analytics.NumberOfObject);
             byte[] encodeBuffer = new byte[analytics.MaxStringEncodingBytes];
 
@@ -708,8 +701,22 @@ namespace NanoPlist
             }
 
             if(x is byte[]) {
-                bool eq = (x as byte[]).SequenceEqual(y as byte[]);
-                return eq;
+                byte[] xbyte = x as byte[];
+                byte[] ybyte = y as byte[];
+                if(xbyte.Length != ybyte.Length)
+                {
+                    return false;
+                }
+                for(int i = 0; i < xbyte.Length; ++i)
+                {
+                    if(xbyte[i] != ybyte[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+                // bool eq = (x as byte[]).SequenceEqual(y as byte[]);
+                // return eq;
             }
             if(x is double) {
                 bool eq = Math.Abs((double)x - (double)y) < deltaReal;

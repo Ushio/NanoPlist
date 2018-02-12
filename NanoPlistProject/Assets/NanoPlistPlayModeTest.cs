@@ -302,47 +302,56 @@ public class NanoPlistPlayModeTest {
             Assert.IsTrue(Plist.EqualObject(value1, value2, delta, deltaDateSeconds) == (value2 == value1));
         }
 
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 10000; ++i)
+        {
             byte[] value1 = Arbitrary.BinaryData();
-            byte[] valueA = value1.Concat(new byte[]{ (byte)(random.Generate() & 0xFF) }).ToArray();
-            byte[] valueB = value1.Concat(new byte[]{ (byte)(random.Generate() & 0xFF) }).ToArray();
+            byte[] valueA = value1.Concat(new byte[] { (byte)(random.Generate() & 0xFF) }).ToArray();
+            byte[] valueB = value1.Concat(new byte[] { (byte)(random.Generate() & 0xFF) }).ToArray();
 
             Assert.IsTrue(Plist.EqualObject(valueA, valueB, delta, deltaDateSeconds) == Plist.EqualObject(valueB, valueA, delta, deltaDateSeconds));
             Assert.IsTrue(Plist.EqualObject(value1, valueA, delta, deltaDateSeconds) == false);
         }
-        
-        for (int i = 0; i < 10000; ++i) {
+
+        for (int i = 0; i < 5000; ++i)
+        {
             List<object> value1 = new List<object>();
             int n = (int)random.Generate() % 100;
-            for(int j = 0 ; j < n ; ++j) {
+            for (int j = 0; j < n; ++j)
+            {
                 value1.Add(Arbitrary.PlistValue());
             }
             Assert.IsTrue(Plist.EqualObject(value1, value1, delta, deltaDateSeconds));
-            
+
             // Insert Test
             List<object> value2 = new List<object>(value1);
             value2.Insert((int)random.Generate() % (value1.Count + 1), Arbitrary.PlistValue());
             Assert.IsTrue(Plist.EqualObject(value1, value2, delta, deltaDateSeconds) == false);
 
             // Modify Test
-            if(n > 0) {
+            if (n > 0)
+            {
                 List<object> value3 = new List<object>(value1);
                 int index = (int)random.Generate() % value1.Count;
                 object newValue = Arbitrary.PlistValue();
                 object oldValue = value3[index];
                 value3[index] = newValue;
-                if(Plist.EqualObject(oldValue, newValue, delta, deltaDateSeconds)) {
+                if (Plist.EqualObject(oldValue, newValue, delta, deltaDateSeconds))
+                {
                     Assert.IsTrue(Plist.EqualObject(value1, value3, delta, deltaDateSeconds));
-                } else {
+                }
+                else
+                {
                     Assert.IsTrue(Plist.EqualObject(value1, value3, delta, deltaDateSeconds) == false);
                 }
             }
         }
 
-        for (int i = 0; i < 10000; ++i) {
+        for (int i = 0; i < 1000; ++i)
+        {
             Dictionary<string, object> value1 = new Dictionary<string, object>();
             int n = (int)random.Generate() % 100;
-            for(int j = 0 ; j < n ; ++j) {
+            for (int j = 0; j < n; ++j)
+            {
                 value1[Arbitrary.Text()] = Arbitrary.PlistValue();
             }
             Assert.IsTrue(Plist.EqualObject(value1, value1, delta, deltaDateSeconds));
@@ -350,7 +359,8 @@ public class NanoPlistPlayModeTest {
             // Add Test
             Dictionary<string, object> value2 = new Dictionary<string, object>(value1);
             var newKey = Arbitrary.Text();
-            if(value2.ContainsKey(newKey) == false) {
+            if (value2.ContainsKey(newKey) == false)
+            {
                 value2[newKey] = Arbitrary.PlistValue();
                 Assert.IsTrue(Plist.EqualObject(value1, value2, delta, deltaDateSeconds) == false);
             }
