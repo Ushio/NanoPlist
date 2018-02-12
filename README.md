@@ -1,6 +1,6 @@
 ## NanoPlist
 NanoPlist is A reader writer for Apple Property Lists (.plist) binary and xml format for C# (C Sharp)
-Binary IO is optimized less GC.
+Binary IO is optimized less GC, fast.
  
  Developing by unity.
 
@@ -29,6 +29,14 @@ NanoPlistProject/Assets/NanoPlistPlayModeTest.cs
 - integer 1, 2, 4 byte is unsigned, 8 is only signed
 - dictionary is key, key, key...., value, value, value... order.
 - OffsetIntSize can handle all byte for object and offsetTable without trailer. "Not Max OffsetInt Size"
+
+## Other Library
+Looks good. but has unity little compatibility problem. 
+And Cocoa like API have pros and cons.
+https://github.com/claunia/plist-cil
+
+Single file library. Simple is best. but have unicode problem, and use global variable.
+https://github.com/animetrics/PlistCS
 
 ## Acknowledgments
 Super good document.
