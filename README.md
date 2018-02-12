@@ -1,6 +1,6 @@
 ## NanoPlist
- NanoPlist is A reader writer for Apple Property Lists (.plist) binary and xml format for C# (C Sharp)
- This is simple, compact. Binary IO is optimized less GC.
+NanoPlist is A reader writer for Apple Property Lists (.plist) binary and xml format for C# (C Sharp)
+Binary IO is optimized less GC.
  
  Developing by unity.
 
