@@ -151,9 +151,9 @@ namespace NanoPlist
                 throw new PlistException("is not binary plist");
             }
             Trailer trailer = ReadTrailerBinary(bytes);
-            return ReadObjectBinary(bytes, trailer, trailer.TopObject);
+            return ReadObjectBinary(bytes, ref trailer, trailer.TopObject);
         }
-        private static object ReadObjectBinary(byte[] bytes, Trailer trailer, ulong objectRef)
+        private static object ReadObjectBinary(byte[] bytes, ref Trailer trailer, ulong objectRef)
         {
             ulong objectAt = ReadOffset(bytes, trailer, objectRef);
             byte headbyte = bytes[objectAt];
@@ -257,7 +257,7 @@ namespace NanoPlist
                         for (ulong i = 0; i < count; ++i)
                         {
                             ulong arrayObjectRef = BigEndianReader.ReadNBytesUnsignedInteger(bytes, trailer.ObjectRefSize, arrayAt + trailer.ObjectRefSize * i);
-                            objectArray.Add(ReadObjectBinary(bytes, trailer, arrayObjectRef));
+                            objectArray.Add(ReadObjectBinary(bytes, ref trailer, arrayObjectRef));
                         }
                         return objectArray;
                     }
@@ -275,8 +275,8 @@ namespace NanoPlist
                         {
                             ulong keyObjectRef = BigEndianReader.ReadNBytesUnsignedInteger(bytes, trailer.ObjectRefSize, dictionaryAt + trailer.ObjectRefSize * i);
                             ulong valueObjectRef = BigEndianReader.ReadNBytesUnsignedInteger(bytes, trailer.ObjectRefSize, dictionaryAt + keyBytes + trailer.ObjectRefSize * i);
-                            string keyObject = ReadObjectBinary(bytes, trailer, keyObjectRef) as string;
-                            object valueObject = ReadObjectBinary(bytes, trailer, valueObjectRef);
+                            string keyObject = ReadObjectBinary(bytes, ref trailer, keyObjectRef) as string;
+                            object valueObject = ReadObjectBinary(bytes, ref trailer, valueObjectRef);
                             objectDictionary[keyObject] = valueObject;
                         }
                         return objectDictionary;
