@@ -19,6 +19,11 @@ NanoPlist use system data type.
 |Array|Generic.List&lt;object&gt;|
 |Dictionary|Generic.Dictionary&lt;object&gt;|
 
+## Testing
+data-driven testing like QuickCheck.
+NanoPlistProject/Assets/NanoPlistPlayModeTest.cs
+
+![render](test.png)
 
 ## Developing note for binary format
 - integer 1, 2, 4 byte is unsigned, 8 is only signed
