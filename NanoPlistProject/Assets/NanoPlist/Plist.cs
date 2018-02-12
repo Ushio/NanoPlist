@@ -277,7 +277,7 @@ namespace NanoPlist
                             ulong valueObjectRef = BigEndianReader.ReadNBytesUnsignedInteger(bytes, trailer.ObjectRefSize, dictionaryAt + keyBytes + trailer.ObjectRefSize * i);
                             string keyObject = ReadObjectBinary(bytes, ref trailer, keyObjectRef) as string;
                             object valueObject = ReadObjectBinary(bytes, ref trailer, valueObjectRef);
-                            objectDictionary[keyObject] = valueObject;
+                            objectDictionary.Add(keyObject, valueObject);
                         }
                         return objectDictionary;
                     }
@@ -826,7 +826,7 @@ namespace NanoPlist
                     if(kvElement.Name.LocalName == "key") {
                         key = kvElement.Value;
                     } else {
-                        dictObject[key] = ReadObjectXML(kvElement);
+                        dictObject.Add(key, ReadObjectXML(kvElement));
                         key = "";
                     }
                 }
