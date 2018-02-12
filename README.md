@@ -17,7 +17,7 @@ NanoPlist use system data type.
 |Date|DateTime|
 |Data|byte[]|
 |Array|Generic.List&lt;object&gt;|
-|Dictionary|Generic.Dictionary&lt;object&gt;|
+|Dictionary|Generic.Dictionary&lt;string,object&gt;|
 
 ## Testing
 data-driven testing like QuickCheck.
