@@ -444,6 +444,15 @@ namespace NanoPlist
             BigEndianWriter.WriteULong(stream, trailer.TopObject);
             BigEndianWriter.WriteULong(stream, trailer.OffsetTableOffset);
         }
+
+        private static bool IsASCIIEncodable(string text)
+        {
+            foreach (char c in text)
+                if ((int)c > 0x7F)
+                    return false;
+            return true;
+        }
+
         private static ulong WriteObjectBinary(Stream stream, object root, byte objectRefSize, byte[] encodeBuffer, ref ulong objectIndex, List<ulong> offsetTable)
         {
             ulong objectRef = objectIndex++;
@@ -497,13 +506,13 @@ namespace NanoPlist
                 byte typebit;
                 int count;
                 int writeBytes;
-                try
+                if (IsASCIIEncodable(text))
                 {
                     typebit = TypeBitsASCIIString;
                     writeBytes = ASCII.GetBytes(text, 0, text.Length, encodeBuffer, 0);
                     count = writeBytes;
                 }
-                catch (EncoderFallbackException)
+                else
                 {
                     typebit = TypeBitsUTF16String;
                     writeBytes = UTF16BE.GetBytes(text, 0, text.Length, encodeBuffer, 0);
