@@ -31,11 +31,13 @@ NanoPlistProject/Assets/NanoPlistPlayModeTest.cs
 - OffsetIntSize can handle all byte for object and offsetTable without trailer. "Not Max OffsetInt Size"
 
 ## Other Library
+**plist-cil**<br>
 Looks good. but has unity little compatibility problem. 
-And Cocoa like API have pros and cons.
+And Cocoa like API have pros and cons.<br>
 https://github.com/claunia/plist-cil
 
-Single file library. Simple is best. but have unicode problem, and use global variable.
+**PlistCS**<br>
+Single file library. Simple is best. but have unicode problem, and use global variable.<br>
 https://github.com/animetrics/PlistCS
 
 ## Acknowledgments
