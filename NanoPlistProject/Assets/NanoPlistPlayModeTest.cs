@@ -175,7 +175,8 @@ public static class OSXPlist
         var arg = string.Format("-convert {0} \"{1}\"", convertTo, filePath);
         psi.Arguments = arg;
         var p = System.Diagnostics.Process.Start(psi);
-        p.StandardOutput.ReadToEnd();
+        string output = p.StandardOutput.ReadToEnd();
+        Assert.AreEqual(output, "");
         p.WaitForExit();
     }
 }
